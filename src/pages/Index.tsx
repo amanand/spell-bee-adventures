@@ -2,11 +2,15 @@ import { useState } from "react";
 import { SpellyCharacter } from "@/components/SpellyCharacter";
 import { GameCard } from "@/components/GameCard";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 import forestBackground from "@/assets/forest-background.png";
 import gardenBackground from "@/assets/garden-background.png";
 import unscramblerMachine from "@/assets/unscrambler-machine.png";
 
+import { useNavigate } from "react-router-dom";
+
 const Index = () => {
+  const navigate = useNavigate();
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
 
   const games = [
@@ -48,8 +52,24 @@ const Index = () => {
 
   const handleGameSelect = (gameId: string) => {
     setSelectedGame(gameId);
-    // TODO: Navigate to specific game component
-    console.log(`Starting game: ${gameId}`);
+    
+    // Navigate to specific game routes
+    switch(gameId) {
+      case "picture-puzzle":
+        navigate("/picture-puzzle");
+        break;
+      case "unscrambler":
+        navigate("/unscrambler");
+        break;
+      case "word-maze":
+        toast.success("🚧 Coming soon! Spelly is building this adventure!");
+        break;
+      case "letter-river":
+        toast.success("🔒 Complete other adventures first!");
+        break;
+      default:
+        console.log(`Starting game: ${gameId}`);
+    }
   };
 
   return (
