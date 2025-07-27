@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SpellyCharacter } from "@/components/SpellyCharacter";
 import { GameCard } from "@/components/GameCard";
+import { WordlistUpload } from "@/components/WordlistUpload";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import forestBackground from "@/assets/forest-background.png";
@@ -12,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 const Index = () => {
   const navigate = useNavigate();
   const [selectedGame, setSelectedGame] = useState<string | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
 
   const games = [
     {
@@ -46,7 +48,7 @@ const Index = () => {
       description: "Cross the river by filling in the missing letters!",
       icon: "🌊",
       difficulty: "hard" as const,
-      isLocked: true
+      isLocked: false
     }
   ];
 
@@ -65,11 +67,18 @@ const Index = () => {
         navigate("/word-cloud-maze");
         break;
       case "letter-river":
-        toast.success("🔒 Complete other adventures first!");
+        toast.info("🚧 Coming soon!");
         break;
       default:
         console.log(`Starting game: ${gameId}`);
     }
+  };
+
+  const handleWordsUploaded = (words: string[]) => {
+    // Store uploaded words in localStorage for games to access
+    localStorage.setItem('customWordlist', JSON.stringify(words));
+    setShowUpload(false);
+    toast.success("Custom wordlist loaded! Games will now use your words.");
   };
 
   return (
@@ -103,10 +112,23 @@ const Index = () => {
             Choose your spelling challenge and let the magic begin! ✨
           </p>
 
-          <Button variant="magic" size="hero" className="animate-glow">
-            🎯 View My Progress
-          </Button>
+          <div className="flex gap-4 justify-center">
+            <Button 
+              variant="outline" 
+              onClick={() => setShowUpload(!showUpload)}
+              className="bg-card/80 backdrop-blur-sm"
+            >
+              📁 Upload Custom Wordlist
+            </Button>
+          </div>
         </div>
+
+        {/* Wordlist Upload Section */}
+        {showUpload && (
+          <div className="max-w-md mx-auto mb-12">
+            <WordlistUpload onWordsUploaded={handleWordsUploaded} />
+          </div>
+        )}
 
         {/* Game Selection Grid */}
         <div className="max-w-6xl mx-auto">
@@ -124,7 +146,7 @@ const Index = () => {
                 backgroundImage={game.backgroundImage}
                 difficulty={game.difficulty}
                 onPlay={() => handleGameSelect(game.id)}
-                isLocked={game.isLocked}
+                isLocked={false}
               />
             ))}
           </div>

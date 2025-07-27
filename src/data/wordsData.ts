@@ -52,7 +52,25 @@ export const getWordsByDifficulty = (difficulty: Word['difficulty']) => {
 };
 
 export const getRandomWords = (count: number, category?: Word['category']) => {
-  const pool = category ? getWordsByCategory(category) : wordsData;
+  // Check for custom wordlist in localStorage
+  const customWordlist = localStorage.getItem('customWordlist');
+  
+  let pool: Word[];
+  
+  if (customWordlist) {
+    // Use custom wordlist
+    const words = JSON.parse(customWordlist) as string[];
+    pool = words.map(word => ({
+      word,
+      category: 'english' as const,
+      difficulty: 'medium' as const,
+      clue: `Spell the word: ${word}`
+    }));
+  } else {
+    // Use default wordlist
+    pool = category ? getWordsByCategory(category) : wordsData;
+  }
+  
   const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 };
