@@ -62,7 +62,7 @@ const Index = () => {
         navigate("/unscrambler");
         break;
       case "word-maze":
-        toast.success("🚧 Coming soon! Spelly is building this adventure!");
+        navigate("/word-cloud-maze");
         break;
       case "letter-river":
         toast.success("🔒 Complete other adventures first!");
